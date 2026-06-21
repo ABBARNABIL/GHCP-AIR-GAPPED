@@ -1,0 +1,509 @@
+{
+  "uid": "ollama-copilot",
+  "title": "Ollama · Copilot CLI — Live Metrics",
+  "tags": ["ollama", "copilot", "llm", "offline"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "annotations": { "list": [] },
+  "templating": { "list": [] },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Model",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_loaded", "instant": true, "legendFormat": "{{name}}", "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.name}",
+          "color": { "mode": "fixed", "fixedColor": "#58a6ff" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#58a6ff" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "name", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Params · Quant",
+      "gridPos": { "h": 4, "w": 4, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_loaded", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.params} · ${__field.labels.quant}",
+          "color": { "mode": "fixed", "fixedColor": "#8aa0b6" },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "name", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Processor",
+      "gridPos": { "h": 4, "w": 4, "x": 10, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_gpu", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "CPU", "index": 0 }, "1": { "text": "GPU", "index": 1 } } }
+          ],
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#d29922" }, { "value": 1, "color": "#3fb950" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "value", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Context",
+      "gridPos": { "h": 4, "w": 3, "x": 14, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_context_tokens", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#8aa0b6" } },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "RAM (resident)",
+      "gridPos": { "h": 4, "w": 3, "x": 17, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_ram_bytes", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "bytes", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#8aa0b6" } },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Keep-alive (until unload)",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_model_keepalive_seconds", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s", "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "mappings": [ { "type": "value", "options": { "0": { "text": "unloaded (cold)", "index": 0 } } } ],
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#f85149" }, { "value": 1, "color": "#d29922" }, { "value": 300, "color": "#3fb950" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "value", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Current request",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_status_code", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": {
+              "0": { "text": "IDLE", "index": 0 },
+              "1": { "text": "PREFILL", "index": 1 },
+              "2": { "text": "GENERATING", "index": 2 },
+              "3": { "text": "COLD", "index": 3 }
+            } }
+          ],
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#8aa0b6" }, { "value": 1, "color": "#a371f7" }, { "value": 2, "color": "#3fb950" }, { "value": 3, "color": "#f85149" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "background", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Tokens sent",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_prompt_tokens", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#58a6ff" } },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "area", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 9,
+      "type": "gauge",
+      "title": "Prefill progress",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_progress_ratio", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit", "min": 0, "max": 1, "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#a371f7" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "showThresholdLabels": false, "showThresholdMarkers": false
+      }
+    },
+    {
+      "id": 10,
+      "type": "stat",
+      "title": "Prefill tok/s",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_prefill_tps", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "none", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#a371f7" } },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "area", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Gen tok/s",
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_gen_tps", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "none", "decimals": 1, "color": { "mode": "fixed", "fixedColor": "#3fb950" } },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "area", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 12,
+      "type": "bargauge",
+      "title": "Cache hit — reused vs reprocessed",
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_reused_tokens", "instant": true, "legendFormat": "Reused (hit)", "datasource": { "type": "prometheus", "uid": "prometheus" } },
+        { "refId": "B", "expr": "ollama_current_reprocessed_tokens", "instant": true, "legendFormat": "Reprocessed (miss)", "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed" } },
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#58a6ff" } } ] },
+          { "matcher": { "id": "byFrameRefID", "options": "B" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#a371f7" } } ] }
+        ]
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal", "displayMode": "gradient", "showUnfilled": true
+      }
+    },
+
+    {
+      "id": 13,
+      "type": "gauge",
+      "title": "Live KV cache occupancy (slot 0)",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "100 * ollama_kv_cache_used_tokens / ollama_kv_cache_capacity_tokens", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100, "decimals": 1,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#1f6feb" }, { "value": 80, "color": "#d29922" }, { "value": 95, "color": "#f85149" } ] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "showThresholdLabels": false, "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 14,
+      "type": "stat",
+      "title": "KV used (tokens)",
+      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_kv_cache_used_tokens", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#1f6feb" } }, "overrides": [] },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "area", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "KV free (tokens)",
+      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_kv_cache_capacity_tokens - ollama_kv_cache_used_tokens", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#8aa0b6" } }, "overrides": [] },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "KV used (MiB)",
+      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_kv_cache_used_mib", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#1f6feb" } }, "overrides": [] },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 17,
+      "type": "stat",
+      "title": "KV free (MiB)",
+      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_kv_cache_full_mib - ollama_kv_cache_used_mib", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#8aa0b6" } }, "overrides": [] },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto"
+      }
+    },
+
+    {
+      "id": 18,
+      "type": "stat",
+      "title": "Turns (tasks)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "ollama_turns_total", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#e6edf3" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 19,
+      "type": "stat",
+      "title": "POST requests",
+      "gridPos": { "h": 4, "w": 3, "x": 4, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "sum(ollama_http_requests_total)", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#e6edf3" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "5xx / timeouts",
+      "gridPos": { "h": 4, "w": 3, "x": 7, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "ollama_http_errors_total", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short", "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#3fb950" }, { "value": 1, "color": "#f85149" } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "value", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Avg prompt (tok)",
+      "gridPos": { "h": 4, "w": 4, "x": 10, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "ollama_prompt_tokens_total / clamp_min(ollama_turns_total, 1)", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#58a6ff" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Cache-hit rate",
+      "gridPos": { "h": 4, "w": 4, "x": 14, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "100 * ollama_reused_tokens_total / clamp_min(ollama_reused_tokens_total + ollama_reprocessed_tokens_total, 1)", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100, "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "value": null, "color": "#f85149" }, { "value": 40, "color": "#d29922" }, { "value": 70, "color": "#3fb950" } ] }
+        },
+        "overrides": []
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "value", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Total reprocessed",
+      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "ollama_reprocessed_tokens_total", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#a371f7" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto" }
+    },
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Total generated",
+      "gridPos": { "h": 4, "w": 3, "x": 21, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "ollama_generated_tokens_total", "instant": true, "datasource": { "type": "prometheus", "uid": "prometheus" } } ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#3fb950" } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "value", "colorMode": "none", "graphMode": "none", "justifyMode": "auto" }
+    },
+
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "Throughput (tok/s)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_prefill_tps", "legendFormat": "Prefill tok/s", "datasource": { "type": "prometheus", "uid": "prometheus" } },
+        { "refId": "B", "expr": "ollama_current_gen_tps", "legendFormat": "Gen tok/s", "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none", "decimals": 1,
+          "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "lineWidth": 2, "fillOpacity": 12, "showPoints": "never", "spanNulls": true, "axisPlacement": "auto" },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Prefill tok/s" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#a371f7" } } ] },
+          { "matcher": { "id": "byName", "options": "Gen tok/s" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#3fb950" } } ] }
+        ]
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } }
+    },
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "Prompt size & KV cache used (tokens)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 19 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "ollama_current_prompt_tokens", "legendFormat": "Prompt tokens", "datasource": { "type": "prometheus", "uid": "prometheus" } },
+        { "refId": "B", "expr": "ollama_kv_cache_used_tokens", "legendFormat": "KV used", "datasource": { "type": "prometheus", "uid": "prometheus" } }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short", "decimals": 0,
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true, "axisPlacement": "auto" },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Prompt tokens" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#58a6ff" } } ] },
+          { "matcher": { "id": "byName", "options": "KV used" }, "properties": [ { "id": "color", "value": { "mode": "fixed", "fixedColor": "#3fb950" } } ] }
+        ]
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "none" } }
+    },
+
+    {
+      "id": 27,
+      "type": "logs",
+      "title": "Recent turns (parsed from logs)",
+      "gridPos": { "h": 11, "w": 12, "x": 0, "y": 27 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "expr": "{job=\"ollama\"} |~ \"task [0-9]+ .*(new prompt|prompt eval time|eval time|total time|stop processing)\"", "queryType": "range", "datasource": { "type": "loki", "uid": "loki" } }
+      ],
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" }
+    },
+    {
+      "id": 28,
+      "type": "logs",
+      "title": "HTTP requests (GIN access log)",
+      "gridPos": { "h": 11, "w": 12, "x": 12, "y": 27 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "expr": "{job=\"ollama\"} |= \"[GIN]\" |= \"/chat/completions\"", "queryType": "range", "datasource": { "type": "loki", "uid": "loki" } }
+      ],
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" }
+    }
+  ]
+}

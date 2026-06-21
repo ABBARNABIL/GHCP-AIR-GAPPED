@@ -1,0 +1,15 @@
+# Prometheus scrape config for the offline Copilot CLI / Ollama stack.
+# Scrapes the zero-dependency ollama-exporter, which parses the Ollama logs
+# (token counts, tok/s, cache hit/miss) and polls /api/ps (model state, KV cache).
+global:
+  scrape_interval: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: ollama-exporter
+    static_configs:
+      - targets: ["ollama-exporter:9105"]
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
