@@ -11,18 +11,34 @@
     5. Launches `copilot` so inference runs 100% on-device.
 
 .EXAMPLE
-    ./Start-CopilotWithFoundryLocal.ps1 -Model qwen2.5-coder-7b-instruct
+    ./Start-CopilotWithFoundryLocal.ps1 -Model qwen2.5-coder-7b
+
+.EXAMPLE
+    # Pass extra arguments straight through to the copilot CLI:
+    ./Start-CopilotWithFoundryLocal.ps1 -Model phi-4-mini -CopilotArgs '-p','What is 2+2?','--allow-all-tools'
 
 .NOTES
     Prereqs:
       winget install Microsoft.FoundryLocal
       npm install -g @github/copilot   (GitHub Copilot CLI)
-    The model MUST support tool calling + streaming for the agentic CLI to work.
+
+    The model MUST support tool calling (look for "tools" in `foundry model ls`).
+
+    Streaming is force-disabled (`--stream off`). Foundry Local's OpenAI-compatible
+    endpoint omits `finish_reason` on streaming chunks, which makes the Copilot CLI
+    stream parser fail with:
+      "CAPIError: Failed to finalize chat-completions stream: missing finish_reason".
+    Non-streaming requests avoid this, so the agentic loop works reliably.
+
+    CPU model variants (e.g. Phi-4-mini-instruct-generic-cpu) are the most stable.
+    Some NPU/QNN variants can crash the Foundry inference service on large agent
+    prompts; if that happens, pass an explicit CPU model id via -Model.
 #>
 [CmdletBinding()]
 param(
-    [string]$Model = "qwen2.5-coder-7b-instruct",
-    [switch]$NoLaunch
+    [string]$Model = "qwen2.5-coder-7b",
+    [switch]$NoLaunch,
+    [string[]]$CopilotArgs = @()
 )
 
 $ErrorActionPreference = "Stop"
@@ -71,17 +87,22 @@ $env:COPILOT_PROVIDER_TYPE     = "openai"
 $env:COPILOT_PROVIDER_BASE_URL = $baseUrl
 $env:COPILOT_PROVIDER_API_KEY  = "foundry-local"   # dummy; local needs no auth
 $env:COPILOT_MODEL             = $servedId
+$env:COPILOT_OFFLINE           = "true"            # air-gap: skip GitHub auth, telemetry, web tools, MCP, auto-update
 
 Write-Host ""
 Write-Host "  COPILOT_PROVIDER_TYPE     = $($env:COPILOT_PROVIDER_TYPE)"
 Write-Host "  COPILOT_PROVIDER_BASE_URL = $($env:COPILOT_PROVIDER_BASE_URL)"
 Write-Host "  COPILOT_MODEL             = $($env:COPILOT_MODEL)"
+Write-Host "  COPILOT_OFFLINE           = $($env:COPILOT_OFFLINE)"
 Write-Host ""
 
 if ($NoLaunch) {
-    Write-Host "Environment is set in this session. Run 'copilot' to start." -ForegroundColor Yellow
+    Write-Host "Environment is set in this session. Run the CLI with streaming disabled:" -ForegroundColor Yellow
+    Write-Host "    copilot --stream off" -ForegroundColor Yellow
     return
 }
 
-Write-Host "==> Launching GitHub Copilot CLI (inference is now local)..." -ForegroundColor Cyan
-copilot
+Write-Host "==> Launching GitHub Copilot CLI (inference is now local, streaming disabled)..." -ForegroundColor Cyan
+# --stream off is REQUIRED: Foundry Local omits finish_reason on streaming chunks,
+# which breaks the Copilot CLI stream parser. See .NOTES above.
+copilot --stream off @CopilotArgs
