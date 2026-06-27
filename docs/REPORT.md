@@ -215,6 +215,8 @@ Foundry Local execution-provider (EP) coverage:
 | TensorRT RTX | NVIDIA | Windows x64 |
 | VitisAI | AMD NPU | Windows x64 |
 
+![Foundry Local — *Hardware Acceleration* execution-provider support (official Microsoft docs). The **CUDA** row lists only **Windows x64, Linux x64** — there is **no Linux arm64 (aarch64)** entry — and **WebGPU** is limited to Windows x64 / macOS arm64. On this Linux/arm64 host that leaves **CPU** as the only execution provider.](docs/screenshots/CUDA-ARM.png){width=6.0in}
+
 This host is **Linux `aarch64`**. There is **no CUDA EP for Linux arm64**, and WebGPU is
 not offered for Linux → the only EP available is **CPU**. The campaign already showed
 CPU-only makes every model ≥7B exceed the agent timeout, so Foundry Local here would be
