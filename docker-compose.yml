@@ -21,6 +21,8 @@ services:
       - OLLAMA_HOST=0.0.0.0:11434
       - OLLAMA_CONTEXT_LENGTH=32768       # llama3.1:8b supports up to 131072; 32k balances vs RAM
       - OLLAMA_KEEP_ALIVE=30m             # keep the model resident between CLI calls
+      - NVIDIA_VISIBLE_DEVICES=all        # expose the GB10 GPU to the runtime
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]     # succeeds once the Ollama server is serving
@@ -29,14 +31,14 @@ services:
       retries: 12
       start_period: 20s
 
-    # ---- GPU acceleration (uncomment on NVIDIA hosts with the Container Toolkit) ----
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: ["gpu"]
+    # ---- GPU acceleration (NVIDIA GB10 + Container Toolkit present on this host) ----
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
 
   # ============================ Observability ================================
   # Grafana dashboards replace the old browser dashboard. The exporter parses the
